@@ -104,7 +104,6 @@
   function UpdateData() {
     // Add user-entered info to spreadsheet
     var userInfo = {};
-
     userInfo.firstName = document.getElementById("fn").value;
     userInfo.lastName = document.getElementById("ln").value;
     userInfo.houseName = document.getElementById("hn").value;
@@ -121,17 +120,16 @@
     Promise.all([emailPromise, passwordPromise]).then(([email, password])=>{
       userInfo.email = email;
       userInfo.password = password;
-    })//.then(console.log("userInfo:", userInfo)).catch(error => console.log("Error fetching credentials:", error))
-
-    // continue from https://youtu.be/1toLqGwMRVc?t=426 (add userInfo to spreadsheet, though we might want to store info seperate to passwords)
-    google.script.run.withSuccessHandler(function(result) {
-      console.log(result) // BUG: result is returning "New User" instead of "User already exists"
-      console.log(userInfo.email, userInfo.password)
-      if (result === "User already exists") {
-        google.script.run.UpdateUser(userInfo)
-        }
-      }).RegistrationCheck(userInfo.email, userInfo.password)
-    console.log("finished RegistrationCheck and UpdateUser");
+    
+      // continue from https://youtu.be/1toLqGwMRVc?t=426 (add userInfo to spreadsheet, though we might want to store info seperate to passwords)
+      google.script.run.withSuccessHandler(function(result) {
+        //console.log(result) // BUG: result is returning "New User" instead of "User already exists"
+        //console.log(userInfo.email, userInfo.password)
+        if (result === "User already exists") {
+          google.script.run.UpdateUser(userInfo)
+          }
+        }).RegistrationCheck(userInfo.email, userInfo.password)})
+      console.log("finished RegistrationCheck and UpdateUser");
   }
 
   // function AddUserIfRegistered(result) {

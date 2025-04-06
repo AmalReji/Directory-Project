@@ -72,7 +72,8 @@ function UpdateUser(infoArray) {
     if(values[i][0] == infoArray.email && values[i][1] == infoArray.password) {
       // Change from append to UPSERT on this row
       LoginSheet.appendRow([infoArray.email, infoArray.password, infoArray.firstName, infoArray.lastName, infoArray.houseName, infoArray.suburbName]);
-      return "Registration successful";
+      LoginSheet.deleteRow(i);
+      return "Update successful";
     }
   }
   
