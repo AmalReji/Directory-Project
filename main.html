@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>  <base target="_top"> 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+  <style> 
+    body {
+      background-color: rgba(205, 180, 219, 30%);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .card {
+      width: 400px;
+      margin: auto;
+      margin-top: 30px;
+    }
+
+    .input-group-text {
+      width: 100px;
+      display: inline-block;
+    }
+
+    .mycolor {
+      background-color: #6d3b89;
+    }
+
+    .color {
+      color: #6d3b89;
+    }
+
+    .img {
+      width: 60px;
+      margin: auto;
+      display: inline-block;
+    }   
+    .form-row {
+      margin-bottom: 15px;
+    }
+    #emailDisplay {
+    color: black !important;
+    font-size: 18px;
+    display: block;
+  }
+
+    </style>
+<!-- <script> 
+<?!= include('JavaScript'); ?>
+</script> -->
+</head>
+<body>
+  <button type="button" class="btn float-end px-5 text-white" onclick="LogOut()">Log Out</button>
+  <h3 class="mycolor p-2 text-white">ADJ</h3>
+  <br><br><br><br><br><br>
+
+    <h1>Welcome to the ADJ Directory</h1>
+      <!-- ADD FORMATED FAMILY PROFILES -->
+
+    <!-- Set up your profile -->
+    <h3 class="p-2">Update your profile</h3>
+    <div class="p-2 form-row">
+      <label>First Name:</label><input type="text" id="fn">
+    </div>
+    <div class="p-2 form-row">
+      <label>Last Name:</label><input type="text" id="ln">
+    </div>
+    <div class="p-2 form-row">
+      <label>House Name:</label><input type="text" id="hn">
+    </div>
+    <div class="p-2 form-row">
+      <label>Suburb:</label>
+      <select id="suburb">
+        <option>Wellington Point</option>
+        <option>Ormiston</option>
+        <option>Cleveland</option>
+      </select>
+    </div>
+    <!-- Auto-fill postcode here -->
+    <div class="p-2 form-row">
+      <button type="button" onclick="UpdateData()">Update Data</button>
+    </div>
+
+  <p>Your email: <span id="emailDisplay"></span></p> <!-- have this as the top form row with a button to update it -->
+  
+
+</body>
+<script>
+  function LogOut() {
+    //ClearText();
+    //document.getElementById("email").value = '';
+    //document.getElementById("pass").value = '';
+    google.script.run.withSuccessHandler(WriteHTML).OpenPage("index");
+  }
+
+  function UpdateData() {
+    // Add user-entered info to spreadsheet
+    var userInfo = {};
+
+    userInfo.firstName = document.getElementById("fn").value;
+    userInfo.lastName = document.getElementById("ln").value;
+    userInfo.houseName = document.getElementById("hn").value;
+    userInfo.suburbName = document.getElementById("suburb").value;
+
+    let emailPromise = new Promise((resolve) => {
+    google.script.run.withSuccessHandler(resolve).getValue("email");
+    });
+
+    let passwordPromise = new Promise((resolve) => {
+    google.script.run.withSuccessHandler(resolve).getValue("password");
+    });
+
+    Promise.all([emailPromise, passwordPromise]).then(([email, password])=>{
+      userInfo.email = email;
+      userInfo.password = password;
+    })//.then(console.log("userInfo:", userInfo)).catch(error => console.log("Error fetching credentials:", error))
+
+    // continue from https://youtu.be/1toLqGwMRVc?t=426 (add userInfo to spreadsheet, though we might want to store info seperate to passwords)
+    google.script.run.withSuccessHandler(function(result) {
+      console.log(result) // BUG: result is returning "New User" instead of "User already exists"
+      console.log(userInfo.email, userInfo.password)
+      if (result === "User already exists") {
+        google.script.run.UpdateUser(userInfo)
+        }
+      }).RegistrationCheck(userInfo.email, userInfo.password)
+    console.log("finished RegistrationCheck and UpdateUser");
+  }
+
+  // function AddUserIfRegistered(result) {
+  //   if (result === "User already exists") {
+  //     google.script.run.UpdateUser(userInfo)
+  //   }
+  // }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+        google.script.run.withSuccessHandler(function(email) {
+            console.log("Retrieved email:", email);  // Debugging step
+            let emailSpan = document.getElementById("emailDisplay");
+            if (emailSpan) {
+                emailSpan.innerText = email || "No email stored";
+            } else {
+                console.error("emailDisplay element not found!");
+            }
+        }).getValue("email");
+    }); // 500ms delay
+  });
+
+
+
+  function WriteHTML (html) {
+    document.open();
+    document.write(html);
+    document.close();
+  }
+  // function WriteHTML(html) {
+  //   document.getElementById("contentContainer").innerHTML = html;
+  // }
+
+</script>
+</html>

@@ -1,0 +1,139 @@
+<script>
+
+function WriteHTML (html) {
+  document.open();
+  document.write(html);
+  document.close();
+}
+
+function Login() {
+    var email  = document.getElementById("email").value;
+    var pass = document.getElementById("pass").value;
+    google.script.run.withSuccessHandler(ReturnMsg).LoginCheck(email,pass);
+}
+
+function ReturnMsg(data) {
+        if (data == true) {
+          google.script.run.withSuccessHandler(WriteHTML).OpenPage("main");
+        }
+        else
+        {
+            $('#RetMsg').html("Incorrect ID or Password !!!");
+            $('#RetMsg').show();
+        }
+}
+
+function Registration() {
+    console.log("Registration function loaded and called");
+    google.script.run.withSuccessHandler(WriteHTML).OpenPage("registration");
+}
+
+function OpenMain(data) {
+   google.script.run.withSuccessHandler(WriteHTML).OpenPage("main");
+}
+
+function ClearText() {
+      $('#RetMsg').html("");
+      $('#RetMsg').hide();
+}
+
+function LogOut() {
+    ClearText();
+    //document.getElementById("email").value = '';
+    //document.getElementById("pass").value = '';
+    google.script.run.withSuccessHandler(WriteHTML).OpenPage("index");
+}
+
+
+// registration
+
+// function WriteHTML (html) {
+//   document.open();
+//   document.write(html);
+//   document.close();
+// }
+
+function Register() {
+  var email  = document.getElementById("email").value;
+  var pass = document.getElementById("pass").value;
+  google.script.run.withSuccessHandler(RegisterHandler).RegistrationCheck(email,pass); 
+}
+
+function RegisterHandler(result) {
+  if (result === "User already exists") {
+      // Output error message
+      $('#RetMsg').html("User already exists! Please try logging in.").show();
+    } 
+  else if (result === "Registration successful") {
+      // Redirect to login page
+      google.script.run.withSuccessHandler(WriteHTML).OpenPage("index");
+    }
+}
+
+function LoginPage() {
+    google.script.run.withSuccessHandler(WriteHTML).OpenPage("index");
+}
+
+
+// function OpenMain(data) {
+//    google.script.run.withSuccessHandler(WriteHTML).OpenPage("main");
+// }
+
+// function ClearText() {
+//       $('#RetMsg').html("");
+//       $('#RetMsg').hide();
+// }
+
+// function LogOut() {
+//     ClearText();
+//     //document.getElementById("email").value = '';
+//     //document.getElementById("pass").value = '';
+//     google.script.run.withSuccessHandler(WriteHTML).OpenPage("index");
+// }
+
+// main
+
+// function WriteHTML (html) {
+//   document.open();
+//   document.write(html);
+//   document.close();
+// }
+
+// function Login() {
+//     var email  = document.getElementById("email").value;
+//     var pass = document.getElementById("pass").value;
+//     google.script.run.withSuccessHandler(ReturnMsg).LoginCheck(email,pass);
+// }
+
+// function ReturnMsg(data) {
+//         if (data == true) {
+//           google.script.run.withSuccessHandler(WriteHTML).OpenPage("main");
+//         }
+//         else
+//         {
+//             $('#RetMsg').html("Incorrect ID or Password !!!");
+//             $('#RetMsg').show();
+//         }
+// }
+
+// function Registration() {
+//     google.script.run.withSuccessHandler(WriteHTML).OpenPage("registration");
+// }
+
+// function OpenMain(data) {
+//    google.script.run.withSuccessHandler(WriteHTML).OpenPage("main");
+// }
+
+// function ClearText() {
+//       $('#RetMsg').html("");
+//       $('#RetMsg').hide();
+// }
+
+// function LogOut() {
+//     ClearText();
+//     //document.getElementById("email").value = '';
+//     //document.getElementById("pass").value = '';
+//     google.script.run.withSuccessHandler(WriteHTML).OpenPage("index");
+// }
+</script>
+
